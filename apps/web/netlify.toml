@@ -6,6 +6,10 @@
   command = "cd ../api && npm ci && npx prisma generate && cd ../web && npm run build"
   publish = ".next"
 
+# Runtime oficial de Next.js (páginas, middleware con CSP e imágenes). Sin él Netlify publica .next como estático.
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
 [build.environment]
   NODE_VERSION = "22"
   NEXT_TELEMETRY_DISABLED = "1"
