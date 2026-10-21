@@ -71,11 +71,20 @@ export const requireAuth: RequestHandler = async (req, _res, next) => {
   } catch {
     throw unauthorized();
   }
+  const key = `${claims.sub}:${claims.bid}`;
+  const cached = authCache.get(key);
+  if (cached && cached.expires > Date.now()) {
+    req.auth = cached.auth;
+    return next();
+  }
   const membership = await prisma.membership.findUnique({
     where: { userId_businessId: { userId: claims.sub, businessId: claims.bid } },
     include: { business: { select: { currency: true, plan: true } } },
   });
-  if (!membership || !membership.active) throw unauthorized();
+  if (!membership || !membership.active) {
+    authCache.delete(key);
+    throw unauthorized();
+  }
   req.auth = {
     userId: claims.sub,
     businessId: claims.bid,
@@ -84,8 +93,24 @@ export const requireAuth: RequestHandler = async (req, _res, next) => {
     currency: membership.business.currency,
     plan: membership.business.plan,
   };
+  authCache.set(key, { auth: req.auth, expires: Date.now() + AUTH_CACHE_MS });
   next();
 };
+
+/**
+ * La membresía se guarda unos segundos en memoria: en producción la base está en otra región y cada
+ * consulta suma ~70 ms. Un cambio de permisos o una baja tarda como mucho AUTH_CACHE_MS en aplicarse.
+ */
+const AUTH_CACHE_MS = 30_000;
+const authCache = new Map<string, { auth: AuthContext; expires: number }>();
+
+/** Olvida la membresía en caché (cambios de permisos, bajas, cambio de moneda) en esta instancia. */
+export function forgetAuth(businessId: string, userId?: string) {
+  for (const key of authCache.keys()) {
+    const [u, b] = key.split(":");
+    if (b === businessId && (!userId || u === userId)) authCache.delete(key);
+  }
+}
 
 /** Exige al menos uno de los permisos indicados. */
 export const requirePerm =

@@ -1,31 +1,53 @@
 // Datos de demostración: tienda de celulares, accesorios y servicio técnico.
-// Idempotente: si el negocio "demo" ya existe no hace nada.
-// Acceso: celular 70000001 (propietario) o 70000002 (empleado/técnico); el OTP sale en el log
-// de la API o en la respuesta si OTP_DEV_ECHO=true.
+// Idempotente: no hace nada si el negocio ya tiene productos.
+// SEED_BUSINESS_SLUG=<slug> carga los datos en un negocio ya registrado; sin ella crea el negocio "demo",
+// cuyo propietario entra con la cuenta de Supabase Auth de SEED_OWNER_EMAIL.
 
 import { PrismaClient, type PaymentMethod } from "@prisma/client";
 
 const prisma = new PrismaClient({ transactionOptions: { timeout: 60_000 } });
 const DAY = 86_400_000;
 
-async function main() {
-  if (await prisma.business.findUnique({ where: { slug: "demo" } })) {
-    console.log("[seed] El negocio demo ya existe, se omite.");
-    return;
+const DEMO_TEXTS = {
+  receiptFooter: "Los productos con garantía requieren este comprobante. ¡Gracias por su compra!",
+  repairTerms:
+    "1. El equipo se entrega solo con esta orden. 2. Pasados 60 días sin recoger, el taller no se responsabiliza del equipo. " +
+    "3. La garantía cubre solo la reparación realizada, no daños por humedad o golpes. 4. Los equipos mojados se reciben sin garantía.",
+  catalogDescription: "Cargadores, fundas, micas, audífonos, memorias y celulares. Servicio técnico especializado.",
+};
+
+/**
+ * Sin SEED_BUSINESS_SLUG crea el negocio "demo". Con él, carga los datos en ese negocio ya registrado
+ * (solo si aún no tiene productos) y completa los textos de configuración que estén vacíos.
+ */
+async function targetBusiness() {
+  const slug = process.env.SEED_BUSINESS_SLUG;
+  if (slug) {
+    const business = await prisma.business.findUnique({
+      where: { slug },
+      include: { memberships: { where: { role: "OWNER" }, include: { user: true } }, _count: { select: { products: true } } },
+    });
+    if (!business) throw new Error(`No existe el negocio con slug "${slug}".`);
+    if (business._count.products > 0) return null;
+    const owner = business.memberships[0].user;
+    await prisma.business.update({
+      where: { id: business.id },
+      data: {
+        receiptFooter: business.receiptFooter ?? DEMO_TEXTS.receiptFooter,
+        repairTerms: business.repairTerms ?? DEMO_TEXTS.repairTerms,
+        catalogDescription: business.catalogDescription ?? DEMO_TEXTS.catalogDescription,
+      },
+    });
+    return { business, owner };
   }
 
+  if (await prisma.business.findUnique({ where: { slug: "demo" } })) return null;
   const owner = await prisma.user.upsert({
     where: { phone: "70000001" },
     update: {},
     // Con este email (cuenta de Supabase Auth) se entra como propietario del demo
     create: { phone: "70000001", email: process.env.SEED_OWNER_EMAIL ?? "demo@zulycell.local", name: "Zulema Cayo" },
   });
-  const tech = await prisma.user.upsert({
-    where: { phone: "70000002" },
-    update: {},
-    create: { phone: "70000002", name: "Carlos Mamani" },
-  });
-
   const business = await prisma.business.create({
     data: {
       name: "ZulyCell Accesorios",
@@ -39,18 +61,31 @@ async function main() {
       address: "Calle Eloy Salmón 1050, La Paz",
       phone: "70000001",
       taxId: "1020304050",
-      receiptFooter: "Los productos con garantía requieren este comprobante. ¡Gracias por su compra!",
-      repairTerms:
-        "1. El equipo se entrega solo con esta orden. 2. Pasados 60 días sin recoger, el taller no se responsabiliza del equipo. " +
-        "3. La garantía cubre solo la reparación realizada, no daños por humedad o golpes. 4. Los equipos mojados se reciben sin garantía.",
-      catalogDescription: "Cargadores, fundas, micas, audífonos, memorias y celulares. Servicio técnico especializado.",
       catalogWhatsapp: "59170000001",
+      ...DEMO_TEXTS,
     },
+  });
+  await prisma.membership.create({ data: { userId: owner.id, businessId: business.id, role: "OWNER" } });
+  return { business, owner };
+}
+
+async function main() {
+  const target = await targetBusiness();
+  if (!target) {
+    console.log("[seed] El negocio ya tiene datos, se omite.");
+    return;
+  }
+  const { business, owner } = target;
+
+  const tech = await prisma.user.upsert({
+    where: { phone: "70000002" },
+    update: {},
+    create: { phone: "70000002", name: "Carlos Mamani" },
   });
 
   await prisma.membership.createMany({
+    skipDuplicates: true,
     data: [
-      { userId: owner.id, businessId: business.id, role: "OWNER" },
       {
         userId: tech.id,
         businessId: business.id,
@@ -184,7 +219,7 @@ async function main() {
   // Ventas de los últimos 30 días (accesorios; sin descontar stock para mantener el demo simple)
   const accesorios = [...products.entries()].filter(([, p]) => p.imeis.length === 0 && p.price < 200);
   const methods: PaymentMethod[] = ["CASH", "CASH", "QR", "QR", "CARD", "TRANSFER"];
-  let number = 1;
+  let number = business.nextSaleNumber;
   for (let d = 29; d >= 1; d--) {
     const perDay = 3 + ((d * 7) % 5);
     for (let k = 0; k < perDay; k++) {
@@ -262,7 +297,7 @@ async function main() {
     { client: ana.id, brand: "Samsung", model: "Galaxy A10", imei: "354321098765432", issue: "No carga, se apaga solo", status: "READY" as const, labor: 60, estimated: 150, advance: 50, part: null },
     { client: luis.id, brand: "Apple", model: "iPhone 11", imei: "353987654321098", issue: "Se mojó, no enciende", status: "DIAGNOSING" as const, labor: 0, estimated: 250, advance: 0, part: null },
   ];
-  let repairNumber = 1;
+  let repairNumber = business.nextRepairNumber;
   for (const [i, r] of repairs.entries()) {
     const partsTotal = r.part ? r.part.price : 0;
     const total = r.labor + partsTotal;
@@ -315,7 +350,7 @@ async function main() {
     data: { businessId: business.id, supplierId: supplier.id, type: "DEBT", amount: 1200, description: "Saldo inicial" },
   });
 
-  console.log(`[seed] Negocio demo creado (${business.name}): ${number - 1} ventas, ${repairNumber - 1} reparaciones.`);
+  console.log(`[seed] Datos de demostración cargados en ${business.name}.`);
 }
 
 main()

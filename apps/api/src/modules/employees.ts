@@ -6,7 +6,7 @@ import { email, optPhone, optStr, reqStr } from "../lib/validate.js";
 import { waLink } from "../lib/messaging.js";
 import { config } from "../config.js";
 import { PERMISSION_KEYS, normalizePermissions, type Permission } from "../lib/permissions.js";
-import { ctx, requireOwner } from "../middleware/auth.js";
+import { ctx, forgetAuth, requireOwner } from "../middleware/auth.js";
 
 const router = Router();
 router.use(requireOwner);
@@ -125,6 +125,7 @@ router.put("/:membershipId", async (req, res) => {
     },
     include: { user: { select: { name: true, phone: true, email: true } } },
   });
+  forgetAuth(businessId, m.userId);
   res.json(toDto(updated));
 });
 
@@ -143,6 +144,7 @@ router.delete("/:membershipId", async (req, res) => {
   const { businessId } = ctx(req);
   const m = await findEmployee(businessId, req.params.membershipId);
   await prisma.membership.update({ where: { id: m.id }, data: { active: false } });
+  forgetAuth(businessId, m.userId);
   res.json({ ok: true });
 });
 

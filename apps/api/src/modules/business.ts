@@ -5,7 +5,7 @@ import { badRequest } from "../lib/errors.js";
 import { optEmail, optPhone, optStr, reqStr } from "../lib/validate.js";
 import { COUNTRY_CODES, countryByCode } from "../lib/countries.js";
 import { imageUrl } from "../lib/storage.js";
-import { ctx, requireOwner } from "../middleware/auth.js";
+import { ctx, forgetAuth, requireOwner } from "../middleware/auth.js";
 
 const router = Router();
 
@@ -78,6 +78,7 @@ router.put("/", requireOwner, async (req, res) => {
       ...(current.country !== data.country ? { timezone: country.timezone } : {}),
     },
   });
+  forgetAuth(businessId);
   res.json({ ok: true });
 });
 
