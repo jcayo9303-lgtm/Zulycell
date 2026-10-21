@@ -1,0 +1,200 @@
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 10px;
+  border-radius: 999px;
+  border: 1px solid var(--border-strong);
+  background: var(--surface);
+  font-size: var(--fs-ui);
+  color: var(--text-2);
+  cursor: pointer;
+}
+.chip:hover {
+  background: var(--surface-2);
+}
+.chipActive {
+  background: var(--primary-soft);
+  border-color: var(--primary);
+  color: var(--primary);
+  font-weight: 550;
+}
+.chipCount {
+  font-size: var(--fs-note);
+  color: var(--text-3);
+}
+.chipActive .chipCount {
+  color: var(--primary);
+}
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 8px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+}
+.filters > * {
+  min-width: 140px;
+}
+.search {
+  flex: 1;
+  min-width: 220px;
+}
+
+.cellSub {
+  font-size: var(--fs-note);
+  color: var(--text-3);
+}
+
+.checks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+}
+.check {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--fs-ui);
+  cursor: pointer;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+}
+@media (max-width: 1000px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.dl {
+  display: grid;
+  grid-template-columns: 130px minmax(0, 1fr);
+  gap: 6px 12px;
+  margin: 0;
+}
+.dl dt {
+  color: var(--text-3);
+  font-size: var(--fs-note);
+  padding-top: 1px;
+}
+.dl dd {
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.totals {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.totals > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+.grand {
+  font-size: var(--fs-card-title);
+  font-weight: 650;
+  border-top: 1px solid var(--border);
+  padding-top: 6px;
+}
+.bigBalance {
+  font-size: var(--fs-kpi);
+  font-weight: 650;
+}
+
+.addPart {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) 90px 110px auto;
+  gap: 8px;
+  align-items: end;
+  padding: 12px 16px;
+  border-top: 1px solid var(--border);
+}
+@media (max-width: 720px) {
+  .addPart {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.secret {
+  font-family: var(--font-code);
+}
+
+/* ── Ticket imprimible ─────────────────────────────────────────── */
+.ticket {
+  max-width: 720px;
+  margin: 0 auto;
+  color: #000;
+  font-size: var(--fs-base);
+}
+.ticketHead {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  border-bottom: 2px solid #000;
+  padding-bottom: 10px;
+  margin-bottom: 12px;
+}
+.ticketLogo {
+  max-height: 48px;
+  max-width: 140px;
+  margin-bottom: 4px;
+}
+.ticketTitle {
+  font-size: var(--fs-page-title);
+  font-weight: 700;
+  text-align: right;
+}
+.ticketSection {
+  margin-bottom: 12px;
+}
+.ticketSection h3 {
+  font-size: var(--fs-section-title);
+  font-weight: 650;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+.ticketGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px 16px;
+}
+.terms {
+  font-size: var(--fs-note);
+  white-space: pre-wrap;
+  border-top: 1px solid #999;
+  padding-top: 8px;
+  margin-top: 12px;
+}
+.signatures {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  margin-top: 48px;
+  text-align: center;
+  font-size: var(--fs-note);
+}
+.signatures div {
+  border-top: 1px solid #000;
+  padding-top: 4px;
+}
+.cut {
+  border-top: 1px dashed #000;
+  margin: 18px 0;
+}

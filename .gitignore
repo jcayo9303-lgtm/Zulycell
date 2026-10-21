@@ -1,0 +1,20 @@
+node_modules/
+.next/
+dist/
+coverage/
+*.log
+.DS_Store
+*.tmp.*
+
+# Secretos: nunca al repositorio (en Netlify van como variables de entorno)
+.env
+.env.*
+!.env.example
+**/.env
+**/.env.*
+!**/.env.example
+
+# Netlify
+.netlify/
+*.tsbuildinfo
+next-env.d.ts

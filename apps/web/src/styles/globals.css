@@ -1,0 +1,267 @@
+/*
+ * Sistema de diseño zulycell
+ * Tipografía: Inter (todo el sistema) y JetBrains Mono (solo códigos técnicos).
+ * Cifras tabulares en todo el sistema para que las columnas de montos y cantidades queden alineadas.
+ */
+
+:root {
+  /* ── Tipografía ─────────────────────────────────────────────── */
+  --font-sans: var(--font-inter), system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-code: var(--font-jetbrains), ui-monospace, "SFMono-Regular", Consolas, monospace;
+
+  --fs-base: 12.5px;          /* Texto base del sistema */
+  --lh-base: 1.45;
+  --fs-page-title: 17px;      /* Título de cada página */
+  --fs-card-title: 13.5px;    /* Títulos de tarjetas */
+  --fs-section-title: 12.5px; /* Títulos de secciones */
+  --fs-kpi: 21px;             /* Valores grandes de los KPI */
+  --fs-ui: 12px;              /* Menú lateral, botones, campos y tablas */
+  --fs-th: 10.5px;            /* Encabezados de tablas (mayúsculas) */
+  --fs-note: 11px;            /* Notas, pies y textos secundarios */
+  --fs-nav-group: 9.5px;      /* Etiquetas de grupo del menú (mayúsculas) */
+  --fs-axis: 10px;            /* Ejes de los gráficos */
+  --fs-map-label: 10.5px;     /* Etiquetas sobre mapas */
+  --fs-login-title: 26px;     /* Título grande del login */
+
+  /* ── Color (marca Zulycell: rojo #D9432B, carbón #1F1F24, crema #FBF7F2) ── */
+  --bg: #f6f3ee;
+  --surface: #ffffff;
+  --surface-2: #fbf8f3;
+  --border: #e8e3db;
+  --border-strong: #d4cec5;
+  --text: #1f1f24;
+  --text-2: #55545a;
+  --text-3: #8b8990;
+
+  --primary: #d9432b;
+  --primary-hover: #c23a24;
+  --primary-soft: #fbe9e5;
+  --primary-text: #ffffff;
+
+  --success: #15803d;
+  --success-soft: #e8f5ec;
+  --danger: #b42318;
+  --danger-strong: #a01d14;
+  --danger-soft: #fdecea;
+  --warning: #b45309;
+  --warning-soft: #fdf3e2;
+  --info: #1d4ed8;
+  --info-soft: #e8effd;
+
+  --sidebar-bg: #1f1f24;
+  --sidebar-text: #d6d3cf;
+  --sidebar-muted: #8e8c90;
+  --sidebar-active: #34343b;
+  --brand-cream: #fbf7f2;
+  --brand-grey: #69686a;
+  --brand-grey-light: #c4c1be;
+
+  /* ── Espaciado y forma ─────────────────────────────────────── */
+  --radius-sm: 6px;
+  --radius: 8px;
+  --radius-lg: 12px;
+  --shadow-sm: 0 1px 2px rgba(16, 24, 40, 0.06);
+  --shadow: 0 1px 3px rgba(16, 24, 40, 0.08), 0 1px 2px rgba(16, 24, 40, 0.04);
+  --shadow-lg: 0 12px 32px rgba(16, 24, 40, 0.16);
+  --control-h: 32px;
+  --sidebar-w: 224px;
+
+  /* Paleta de gráficos */
+  --chart-1: #d9432b;
+  --chart-2: #1f1f24;
+  --chart-3: #0f766e;
+  --chart-4: #a16207;
+  --chart-5: #6d28d9;
+  --chart-grid: #eeeae4;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-sans);
+  font-size: var(--fs-base);
+  line-height: var(--lh-base);
+  color: var(--text);
+  background: var(--bg);
+  font-variant-numeric: tabular-nums;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1, h2, h3, h4, p {
+  margin: 0;
+}
+
+a {
+  color: var(--primary);
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  font-size: var(--fs-ui);
+  color: inherit;
+}
+
+/* Códigos técnicos: lotes, códigos de barras, números de comprobante, archivos */
+code,
+.mono {
+  font-family: var(--font-code);
+  font-size: 0.95em;
+  font-variant-numeric: tabular-nums;
+}
+
+.num {
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.muted {
+  color: var(--text-2);
+}
+.note {
+  font-size: var(--fs-note);
+  color: var(--text-3);
+}
+
+/* ── Títulos ──────────────────────────────────────────────────── */
+.page-title {
+  font-size: var(--fs-page-title);
+  font-weight: 650;
+  letter-spacing: -0.01em;
+}
+.card-title {
+  font-size: var(--fs-card-title);
+  font-weight: 600;
+}
+.section-title {
+  font-size: var(--fs-section-title);
+  font-weight: 600;
+}
+
+/* ── Tablas ───────────────────────────────────────────────────── */
+.table-wrap {
+  width: 100%;
+  overflow-x: auto;
+}
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--fs-ui);
+}
+.table th {
+  font-size: var(--fs-th);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-weight: 600;
+  color: var(--text-3);
+  text-align: left;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface-2);
+  white-space: nowrap;
+}
+.table td {
+  padding: 9px 12px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+}
+.table tr:last-child td {
+  border-bottom: none;
+}
+.table tbody tr.clickable {
+  cursor: pointer;
+}
+.table tbody tr.clickable:hover td {
+  background: var(--surface-2);
+}
+.table th.num,
+.table td.num {
+  text-align: right;
+}
+
+/* ── Utilidades de layout ─────────────────────────────────────── */
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.row-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+.grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+}
+.wrap {
+  flex-wrap: wrap;
+}
+.grow {
+  flex: 1;
+  min-width: 0;
+}
+.text-success {
+  color: var(--success);
+}
+.text-danger {
+  color: var(--danger-strong);
+}
+
+@media (max-width: 720px) {
+  .grid-2,
+  .grid-3 {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Impresión (comprobantes, cotizaciones → PDF) ─────────────── */
+@media print {
+  body {
+    background: #fff;
+  }
+  .no-print {
+    display: none !important;
+  }
+  .print-only {
+    display: block !important;
+  }
+}
+.print-only {
+  display: none;
+}

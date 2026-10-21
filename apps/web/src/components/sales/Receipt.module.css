@@ -1,0 +1,84 @@
+.receipt {
+  max-width: 340px;
+  margin: 0 auto;
+  padding: 18px 16px;
+  background: var(--surface);
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--radius);
+}
+.head {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  margin-bottom: 12px;
+}
+.logo {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius);
+  background: center / cover no-repeat;
+  margin-bottom: 6px;
+}
+.business {
+  font-size: var(--fs-card-title);
+  font-weight: 650;
+}
+.meta {
+  font-size: var(--fs-note);
+  color: var(--text-2);
+}
+.divider {
+  border: none;
+  border-top: 1px dashed var(--border-strong);
+  margin: 10px 0;
+}
+.items {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--fs-ui);
+}
+.items td {
+  padding: 3px 0;
+  vertical-align: top;
+}
+.itemSub {
+  font-size: var(--fs-note);
+  color: var(--text-3);
+}
+.line {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--fs-ui);
+  padding: 2px 0;
+}
+.total {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-size: var(--fs-card-title);
+  font-weight: 700;
+  padding: 6px 0 2px;
+}
+.foot {
+  text-align: center;
+  font-size: var(--fs-note);
+  color: var(--text-2);
+  margin-top: 12px;
+}
+.voided {
+  text-align: center;
+  font-weight: 700;
+  color: var(--danger-strong);
+  letter-spacing: 0.1em;
+  font-size: var(--fs-section-title);
+  margin-bottom: 8px;
+}
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 14px;
+}

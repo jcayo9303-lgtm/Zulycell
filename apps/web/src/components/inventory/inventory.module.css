@@ -1,0 +1,82 @@
+.thumb {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-2) center / cover no-repeat;
+  border: 1px solid var(--border);
+  flex: none;
+}
+
+.filters {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+  padding: 12px;
+  border-bottom: 1px solid var(--border);
+}
+.filters > :first-child {
+  flex: 1;
+  min-width: 200px;
+}
+.filterSelect {
+  width: 200px;
+}
+
+.formBody {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-top: 14px;
+}
+.formBody[hidden] {
+  display: none;
+}
+
+.variantTable td {
+  padding: 6px;
+}
+.variantTable td input,
+.variantTable td select {
+  min-width: 70px;
+}
+
+.stat {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  font-size: var(--fs-ui);
+}
+.statValue {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.video {
+  width: 100%;
+  border-radius: var(--radius);
+  background: #000;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+}
+
+.positive {
+  color: var(--success);
+}
+.negative {
+  color: var(--danger-strong);
+}
+
+.serialPick {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 6px 12px;
+  max-height: 220px;
+  overflow-y: auto;
+  padding: 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+}

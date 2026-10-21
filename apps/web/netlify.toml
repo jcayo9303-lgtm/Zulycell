@@ -1,0 +1,38 @@
+# Despliegue en Netlify (Base directory del sitio: apps/web)
+# Variables de entorno: ver README → "Despliegue en Netlify".
+
+[build]
+  # Instala y genera la API (Prisma) y luego compila Next.js
+  command = "cd ../api && npm ci && npx prisma generate && cd ../web && npm run build"
+  publish = ".next"
+
+[build.environment]
+  NODE_VERSION = "22"
+  NEXT_TELEMETRY_DISABLED = "1"
+
+[functions]
+  # La API Express corre como una función (apps/api/netlify/functions/api.ts)
+  directory = "../api/netlify/functions"
+  node_bundler = "esbuild"
+  external_node_modules = ["@prisma/client", ".prisma", "exceljs"]
+  included_files = [
+    "../api/node_modules/.prisma/client/libquery_engine-rhel-openssl-3.0.x.so.node",
+    "../api/node_modules/.prisma/client/schema.prisma",
+  ]
+
+# /api/* → función (antes que las rutas de Next.js)
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/api/:splat"
+  status = 200
+  force = true
+
+# Cabeceras de seguridad (la CSP con nonce la emite el middleware de Next.js)
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains"
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "SAMEORIGIN"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(self), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=()"
