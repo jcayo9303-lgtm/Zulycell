@@ -29,6 +29,8 @@ Referencias: [auditoría técnica](docs/treinta-auditoria-tecnica.md) · [formul
 
 ## Despliegue en Netlify (desde GitHub)
 
+**En producción:** https://zulycell.netlify.app · cada push a `main` en GitHub publica automáticamente.
+
 1. Sube el repositorio a GitHub (los `.env` están excluidos por `.gitignore`).
 2. En Netlify: **Add new site → Import from GitHub**, elige el repositorio y configura:
    - **Base directory:** `apps/web`
@@ -49,9 +51,10 @@ Referencias: [auditoría técnica](docs/treinta-auditoria-tecnica.md) · [formul
 4. **En Supabase → Authentication → URL Configuration:**
    - *Site URL:* `https://<tu-sitio>.netlify.app`
    - *Redirect URLs:* `https://<tu-sitio>.netlify.app/**`, `http://localhost:8080/**`, `http://localhost:3000/**`
-5. **En Supabase → Authentication → SMTP Settings:** configura un servidor de correo. El correo incluido en
+5. **En Supabase → Authentication → SMTP Settings** (pendiente): configura un servidor de correo. El correo incluido en
    Supabase solo envía a los miembros del equipo del proyecto y unos pocos correos por hora; para que lleguen
-   a clientes y empleados usa un SMTP propio (Resend, Brevo y otros tienen plan gratuito).
+   a clientes y empleados usa un SMTP propio (Resend, Brevo y otros tienen plan gratuito). Con SMTP propio se
+   pueden poner los correos de verificación y recuperación en español (en plan gratuito Supabase lo exige).
 
 Las migraciones se aplican desde tu PC (no en cada despliegue):
 
