@@ -5,6 +5,8 @@
   # Instala y genera la API (Prisma) y luego compila Next.js
   command = "cd ../api && npm ci && npx prisma generate && cd ../web && npm run build"
   publish = ".next"
+  # Por defecto Netlify solo mira el base directory (apps/web): también hay que publicar si cambia la API
+  ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF -- . ../api"
 
 # Runtime oficial de Next.js (páginas, middleware con CSP e imágenes). Sin él Netlify publica .next como estático.
 [[plugins]]
